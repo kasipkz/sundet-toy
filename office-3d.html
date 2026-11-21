@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ержанның 3D Кеңсесі</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  body{margin:0;overflow:hidden;font-family:sans-serif;background:#000}
+  #ui{position:fixed;top:0;left:0;right:0;padding:12px;background:linear-gradient(#000a,transparent);color:white;z-index:10;text-align:center}
+  #ui h1{margin:0;font-size:18px}
+  #ui p{margin:4px 0 0;font-size:12px;opacity:.8}
+  #stats{position:fixed;top:70px;left:10px;right:10px;display:flex;gap:8px;z-index:10}
+  .card{flex:1;background:#111c;border:1px solid #333;border-radius:12px;padding:10px;text-align:center;color:white}
+  .card b{font-size:18px;color:#ffd700}
+  .card span{font-size:11px;opacity:.7;display:block}
+  #agents{position:fixed;bottom:0;left:0;right:0;display:flex;gap:8px;padding:10px;background:#000d;z-index:10}
+  .agent{flex:1;background:#1a1a1a;border:1px solid #333;border-radius:14px;padding:10px;text-align:center;color:white}
+  .agent img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid #ffd700}
+  .agent button{width:100%;margin-top:6px;padding:8px;border:0;border-radius:8px;font-weight:700}
+  .btn-w{ background:#25D366; color:#fff}
+  .btn-y{ background:#FFD700; }
+  #chat{position:fixed;bottom:170px;left:10px;right:10px;background:white;border-radius:12px;padding:10px;font-size:13px;z-index:10;display:none}
+</style>
+</head>
+<body>
+<div id="ui"><h1>🏢 Ержанның 3D Кеңсесі</h1><p>Саусақпен айналдыр • 3D кеңсе</p></div>
+
+<div id="stats">
+  <div class="card"><b id="leads">17</b><span>Лиды</span></div>
+  <div class="card"><b id="pay">6</b><span>Оплаты</span></div>
+  <div class="card"><b id="money">168 000₸</b><span>Выручка</span></div>
+</div>
+
+<div id="chat"></div>
+
+<div id="agents">
+  <div class="agent"><img src="https://i.pravatar.cc/100?img=12"><br><b>Данияр</b><br><small>Сатушы</small><button class="btn-w" onclick="talk('Данияр: Сәлем! Қай шақырту керек? Қола 3000₸, Күміс 5000₸, Алтын 8000₸')">Сөйлесу</button></div>
+  <div class="agent"><img src="https://i.pravatar.cc/100?img=47"><br><b>Меруерт</b><br><small>Есепші</small><button class="btn-w" onclick="talk('Меруерт: Kaspi +77082418836. Чекті жіберіңіз!')">Төлем</button></div>
+  <div class="agent"><img src="https://i.pravatar.cc/100?img=45"><br><b>Айдана</b><br><small>Қарсы алушы</small><button class="btn-y" onclick="window.open('https://wa.me/77082418836?text=Сәлем!','_blank')">WhatsApp</button></div>
+</div>
+
+<script>
+function talk(t){let c=document.getElementById('chat');c.style.display='block';c.innerHTML=t;setTimeout(()=>c.style.display='none',4000)}
+let leads=17,pay=6,money=168000;
+setInterval(()=>{leads++;if(leads%3==0){pay++;money+=8000}document.getElementById('leads').innerText=leads;document.getElementById('pay').innerText=pay;document.getElementById('money').innerText=money.toLocaleString()+'₸'},5000);
+
+// 3D SCENE
+let scene=new THREE.Scene(); scene.background=new THREE.Color(0x0a1a2f);
+let camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1000); camera.position.set(0,4,8);
+let renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setSize(innerWidth,innerHeight); document.body.appendChild(renderer.domElement);
+let light=new THREE.AmbientLight(0xffffff,0.9); scene.add(light);
+let dir=new THREE.DirectionalLight(0xffd700,0.8); dir.position.set(5,10,5); scene.add(dir);
+// Floor
+let floor=new THREE.Mesh(new THREE.PlaneGeometry(20,20), new THREE.MeshStandardMaterial({color:0x1a3a5a})); floor.rotation.x=-Math.PI/2; scene.add(floor);
+// 3 Desks + Agents as 3D figures
+function person(x,z,color,name){
+  let g=new THREE.Group();
+  let body=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.5,1.6,16), new THREE.MeshStandardMaterial({color:color}));
+  body.position.y=0.8; g.add(body);
+  let head=new THREE.Mesh(new THREE.SphereGeometry(0.4,16,16), new THREE.MeshStandardMaterial({color:0xffdbac}));
+  head.position.y=2; g.add(head);
+  let desk=new THREE.Mesh(new THREE.BoxGeometry(1.4,0.8,0.7), new THREE.MeshStandardMaterial({color:0xffffff}));
+  desk.position.set(0,0.4,1); g.add(desk);
+  g.position.set(x,0,z); scene.add(g); return g;
+}
+let p1=person(-3,0,0x25D366), p2=person(0,0,0xFFD700), p3=person(3,0,0xff6b9d);
+// Animate
+let angle=0;
+function animate(){requestAnimationFrame(animate); angle+=0.005; camera.position.x=Math.sin(angle)*7; camera.position.z=Math.cos(angle)*7; camera.lookAt(0,1,0); p1.rotation.y+=0.01; p2.rotation.y+=0.01; p3.rotation.y+=0.01; renderer.render(scene,camera);} animate();
+window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)})
+</script>
+</body>
+</html>
