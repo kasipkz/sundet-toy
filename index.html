@@ -2,73 +2,488 @@
 <html lang="kk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ержанның 3D Кеңсесі</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>QOSSHY JOLY - 3D Виртуалды Сату Кеңсесі</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <style>
-  body{margin:0;overflow:hidden;font-family:sans-serif;background:#000}
-  #ui{position:fixed;top:0;left:0;right:0;padding:12px;background:linear-gradient(#000a,transparent);color:white;z-index:10;text-align:center}
-  #ui h1{margin:0;font-size:18px}
-  #ui p{margin:4px 0 0;font-size:12px;opacity:.8}
-  #stats{position:fixed;top:70px;left:10px;right:10px;display:flex;gap:8px;z-index:10}
-  .card{flex:1;background:#111c;border:1px solid #333;border-radius:12px;padding:10px;text-align:center;color:white}
-  .card b{font-size:18px;color:#ffd700}
-  .card span{font-size:11px;opacity:.7;display:block}
-  #agents{position:fixed;bottom:0;left:0;right:0;display:flex;gap:8px;padding:10px;background:#000d;z-index:10}
-  .agent{flex:1;background:#1a1a1a;border:1px solid #333;border-radius:14px;padding:10px;text-align:center;color:white}
-  .agent img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid #ffd700}
-  .agent button{width:100%;margin-top:6px;padding:8px;border:0;border-radius:8px;font-weight:700}
-  .btn-w{ background:#25D366; color:#fff}
-  .btn-y{ background:#FFD700; }
-  #chat{position:fixed;bottom:170px;left:10px;right:10px;background:white;border-radius:12px;padding:10px;font-size:13px;z-index:10;display:none}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#F5F1E8;color:#1A1A1A;padding-bottom:20px}
+a{color:inherit}
+.topbar{background:#111;color:#fff;padding:12px 14px;position:sticky;top:0;z-index:50}
+.topbar-row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.logo{font-weight:900;font-size:18px;letter-spacing:.5px}
+.logo small{display:block;font-size:10px;font-weight:400;opacity:.7;letter-spacing:1px}
+.live{background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:5px 9px;border-radius:999px;white-space:nowrap}
+.topbar p{margin:8px 0 0;font-size:12px;opacity:.8}
+.kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}
+.kpi-card{background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);border:1px solid #eee}
+.kpi-card small{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px}
+.kpi-card b{font-size:26px;display:block;margin:4px 0 2px}
+.kpi-card span{font-size:11px;color:#22c55e;font-weight:700}
+.kpi-card:nth-child(3) span{color:#f59e0b}
+.office-wrap{margin:0 12px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.08);border:1px solid #eee}
+.office-header{background:#111;color:#fff;padding:12px 14px;text-align:center}
+.office-header b{font-size:14px;letter-spacing:1px}
+.office-header span{display:block;font-size:10px;opacity:.7;margin-top:2px;letter-spacing:2px}
+.office{position:relative;height:420px;background:#FDFBF6;overflow:hidden;
+background-image:linear-gradient(#E8E0D0 1px,transparent 1px),linear-gradient(90deg,#E8E0D0 1px,transparent 1px);
+background-size:36px 36px;border-top:6px solid #E8DCC8;border-bottom:6px solid #E8DCC8}
+.wall-sign{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:#111;color:#FFD700;font-size:10px;font-weight:900;padding:7px 12px;border-radius:999px;white-space:nowrap;z-index:5;letter-spacing:.5px;box-shadow:0 3px 10px rgba(0,0,0,.2)}
+.window{position:absolute;top:38px;left:12px;width:68px;height:48px;background:#BEE3F8;border:3px solid #fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.1);z-index:1}
+.window:after{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;background:#fff}
+.window2{left:auto;right:12px}
+.plant{position:absolute;font-size:32px;z-index:1}
+.plant1{bottom:8px;left:8px}
+.plant2{bottom:8px;right:8px}
+.plant3{top:60px;right:16px;font-size:26px}
+.desk{position:absolute;width:96px;height:56px;background:#fff;border:2px solid #E5DDCC;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center;z-index:2}
+.desk:before{content:"💻";font-size:22px}
+.desk1{top:95px;left:18px}
+.desk2{top:95px;right:18px}
+.desk3{top:230px;left:50%;transform:translateX(-50%)}
+.chair{position:absolute;width:22px;height:22px;background:#FFD700;border-radius:50%;border:2px solid #fff;z-index:1}
+.chair1{top:155px;left:58px}
+.chair2{top:155px;right:58px}
+.chair3{top:292px;left:50%;transform:translateX(-50%)}
+.person{position:absolute;width:54px;height:64px;z-index:10;transition:left 2.2s ease-in-out,top 2.2s ease-in-out;cursor:pointer;text-align:center}
+.person:active{transform:scale(.92)}
+.avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto;border:3px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+.aidana .avatar{background:#FFE4C4}
+.daniyar .avatar{background:#DBEAFE}
+.meruert .avatar{background:#FCE7F3}
+.person b{display:block;font-size:11px;background:#fff;padding:2px 6px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.1);margin-top:2px;white-space:nowrap}
+.dot{width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block;margin-right:3px}
+.status-line{text-align:center;font-size:11px;color:#666;padding:8px;background:#FFFBEB}
+.tabs{display:flex;gap:8px;padding:12px;overflow-x:auto}
+.tab{white-space:nowrap;padding:10px 14px;border-radius:999px;border:1px solid #ddd;background:#fff;font-weight:700;font-size:13px;cursor:pointer}
+.tab.active{background:#111;color:#fff;border-color:#111}
+.section{display:none;margin:0 12px 12px;background:#fff;border-radius:18px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.section.active{display:block}
+.section h3{margin:0 0 10px;font-size:16px}
+label{font-size:12px;font-weight:700;color:#555;display:block;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px;font-size:14px;background:#FAFAFA;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#111;background:#fff}
+.btn{width:100%;padding:13px;border:0;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;margin-top:10px}
+.btn-black{background:#111;color:#fff}
+.btn-green{background:#25D366;color:#fff}
+.btn-yellow{background:#FFD700;color:#111}
+.btn-outline{background:#fff;border:1px solid #ddd}
+.lead{border:1px solid #eee;border-radius:14px;padding:12px;margin-bottom:10px;background:#FFFEFB}
+.lead-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.lead b{font-size:14px}
+.lead small{color:#888;display:block;font-size:11px;margin-top:2px}
+.badge{font-size:11px;font-weight:800;padding:4px 8px;border-radius:999px;white-space:nowrap}
+.b-new{background:#DBEAFE;color:#1E40AF}
+.b-interest{background:#FEF3C7;color:#92400E}
+.b-sent{background:#E0E7FF;color:#4338CA}
+.b-paid{background:#D1FAE5;color:#065F46}
+.b-reject{background:#FEE2E2;color:#991B1B}
+.lead-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.lead-meta span{background:#F3F4F6;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:700}
+.lead-actions{display:flex;gap:6px;margin-top:10px}
+.lead-actions button{flex:1;padding:9px;border:0;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer}
+.task{border-left:4px solid #FFD700;background:#FFFBEB;border-radius:10px;padding:10px;margin-bottom:8px;font-size:13px}
+.task b{font-size:12px}
+.task small{color:#888;display:block}
+.chat-box{height:280px;overflow-y:auto;background:#F9FAFB;border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:82%;padding:10px 12px;border-radius:16px;font-size:13px;line-height:1.4}
+.msg.me{align-self:flex-end;background:#111;color:#fff;border-bottom-right-radius:4px}
+.msg.bot{align-self:flex-start;background:#fff;border:1px solid #eee;border-bottom-left-radius:4px}
+.msg small{display:block;font-size:10px;opacity:.6;margin-top:4px}
+.chat-input{display:flex;gap:8px;margin-top:10px}
+.chat-input input{flex:1}
+.chat-input button{padding:12px 16px;border:0;border-radius:12px;background:#111;color:#fff;font-weight:800;cursor:pointer;white-space:nowrap}
+.quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.quick button{padding:7px 10px;border-radius:999px;border:1px solid #ddd;background:#fff;font-size:12px;cursor:pointer}
+.report{background:#111;color:#fff;border-radius:16px;padding:16px}
+.report h3{margin:0 0 10px;color:#FFD700}
+.report-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #333;font-size:14px}
+.report-row:last-child{border:0}
+.report-row b{font-size:16px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center;z-index:100}
+.modal.open{display:flex}
+.modal-card{background:#fff;width:100%;max-width:520px;border-radius:22px 22px 0 0;padding:18px;padding-bottom:28px;max-height:82vh;overflow-y:auto}
+.modal-card .avatar{width:64px;height:64px;font-size:32px}
+.close{float:right;border:0;background:#F3F4F6;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px}
+.empty{text-align:center;color:#999;font-size:13px;padding:20px}
+.hint{font-size:11px;color:#888;margin-top:6px;line-height:1.4}
 </style>
 </head>
 <body>
-<div id="ui"><h1>🏢 Ержанның 3D Кеңсесі</h1><p>Саусақпен айналдыр • 3D кеңсе</p></div>
 
-<div id="stats">
-  <div class="card"><b id="leads">17</b><span>Лиды</span></div>
-  <div class="card"><b id="pay">6</b><span>Оплаты</span></div>
-  <div class="card"><b id="money">168 000₸</b><span>Выручка</span></div>
+<div class="topbar">
+  <div class="topbar-row">
+    <div class="logo">QOSSHY JOLY<small>AI SALES DEPARTMENT</small></div>
+    <div class="live">● ТІКЕЛЕЙ ЭФИР</div>
+  </div>
+  <p>Ержанның виртуалды сату кеңсесі. 3 қызметкер дәл қазір жұмыс істеп жатыр.</p>
 </div>
 
-<div id="chat"></div>
+<div class="kpi">
+  <div class="kpi-card"><small>Клиенттер саны</small><b id="kpiTotal">0</b><span id="kpiTotalSub">Барлық клиент</span></div>
+  <div class="kpi-card"><small>Қызығушылар</small><b id="kpiInterest">0</b><span>Қызығушылық бар</span></div>
+  <div class="kpi-card"><small>Сатылым</small><b id="kpiPaid">0</b><span>Төленді</span></div>
+  <div class="kpi-card"><small>Күндік табыс</small><b id="kpiMoney">0₸</b><span id="kpiMoneySub">Бүгін</span></div>
+</div>
 
-<div id="agents">
-  <div class="agent"><img src="https://i.pravatar.cc/100?img=12"><br><b>Данияр</b><br><small>Сатушы</small><button class="btn-w" onclick="talk('Данияр: Сәлем! Қай шақырту керек? Қола 3000₸, Күміс 5000₸, Алтын 8000₸')">Сөйлесу</button></div>
-  <div class="agent"><img src="https://i.pravatar.cc/100?img=47"><br><b>Меруерт</b><br><small>Есепші</small><button class="btn-w" onclick="talk('Меруерт: Kaspi +77082418836. Чекті жіберіңіз!')">Төлем</button></div>
-  <div class="agent"><img src="https://i.pravatar.cc/100?img=45"><br><b>Айдана</b><br><small>Қарсы алушы</small><button class="btn-y" onclick="window.open('https://wa.me/77082418836?text=Сәлем!','_blank')">WhatsApp</button></div>
+<div class="office-wrap">
+  <div class="office-header"><b>QOSSHY JOLY • AI SALES DEPARTMENT • 24/7</b><span>ВИРТУАЛДЫ КЕҢСЕ • АЛМАТЫ</span></div>
+  <div class="office" id="office">
+    <div class="wall-sign">QOSSHY JOLY • AI SALES DEPARTMENT • 24/7</div>
+    <div class="window"></div>
+    <div class="window window2"></div>
+    <div class="plant plant1">🪴</div>
+    <div class="plant plant2">🌿</div>
+    <div class="plant plant3">🌸</div>
+    <div class="desk desk1"></div>
+    <div class="desk desk2"></div>
+    <div class="desk desk3"></div>
+    <div class="chair chair1"></div>
+    <div class="chair chair2"></div>
+    <div class="chair chair3"></div>
+
+    <div class="person aidana" id="p-aidana" onclick="openCard('aidana')"><div class="avatar">👩‍💼</div><b>Айдана</b></div>
+    <div class="person daniyar" id="p-daniyar" onclick="openCard('daniyar')"><div class="avatar">🤖</div><b>Данияр</b></div>
+    <div class="person meruert" id="p-meruert" onclick="openCard('meruert')"><div class="avatar">👩‍💼</div><b>Меруерт</b></div>
+  </div>
+  <div class="status-line"><span class="dot"></span> 3 қызметкер желіде. Адамды бас — карточкасы ашылады. Олар әр 2-3 секунд сайын жүріп жүр.</div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('leads',this)">👥 Клиенттер</button>
+  <button class="tab" onclick="showTab('tasks',this)">📋 Тапсырма беру</button>
+  <button class="tab" onclick="showTab('chat',this)">🤖 Данияр AI</button>
+  <button class="tab" onclick="showTab('report',this)">📊 Меруерт есебі</button>
+</div>
+
+<!-- LEADS -->
+<div class="section active" id="sec-leads">
+  <h3>➕ Жаңа клиент қосу</h3>
+  <label>Аты</label>
+  <input id="f-name" placeholder="Мысалы: Аружан">
+  <label>Телефон</label>
+  <input id="f-phone" placeholder="+7700 000 00 00" inputmode="tel">
+  <label>Той түрі</label>
+  <select id="f-type">
+    <option>Үйлену тойы</option>
+    <option>Қыз ұзату</option>
+    <option>Сүндет той</option>
+    <option>Бесік той</option>
+    <option>Мерейтой</option>
+  </select>
+  <label>Тариф</label>
+  <select id="f-tariff">
+    <option value="Қола - 3000₸">Қола - 3000₸</option>
+    <option value="Күміс - 5000₸">Күміс - 5000₸</option>
+    <option value="Алтын - 10000₸">Алтын - 10000₸</option>
+  </select>
+  <label>Статус</label>
+  <select id="f-status">
+    <option>Жаңа клиент</option>
+    <option>Қызығушылық бар</option>
+    <option>Ұсыныс жіберілді</option>
+    <option>Төленді</option>
+    <option>Бас тартты</option>
+  </select>
+  <button class="btn btn-black" onclick="addLead()">＋ Клиентті қосу</button>
+  <p class="hint">Клиент Firebase-ке `leads` бөліміне сақталады. Телефоннан да, компьютерден де көрінеді.</p>
+  <h3 style="margin-top:18px">👥 Клиенттер базасы (<span id="leadsCount">0</span>)</h3>
+  <div id="leadsList"><div class="empty">Әзірге клиент жоқ. Жоғарыдан бірінші клиентті қос.</div></div>
+</div>
+
+<!-- TASKS -->
+<div class="section" id="sec-tasks">
+  <h3>📋 Тапсырма беру</h3>
+  <label>Қызметкерді таңда</label>
+  <select id="t-who">
+    <option value="aidana">Айдана - Клиент іздеуші</option>
+    <option value="daniyar">Данияр - Қазақша сатушы AI</option>
+    <option value="meruert">Меруерт - Бас менеджер</option>
+  </select>
+  <label>Тапсырма</label>
+  <textarea id="t-text" rows="3" placeholder="Мысалы: Бүгін 10 жаңа клиентке жаз, бағаны жібер..."></textarea>
+  <button class="btn btn-black" onclick="addTask()">Тапсырма беру →</button>
+  <h3 style="margin-top:18px">Белсенді тапсырмалар</h3>
+  <div id="tasksList"><div class="empty">Тапсырма жоқ.</div></div>
+</div>
+
+<!-- CHAT -->
+<div class="section" id="sec-chat">
+  <h3>🤖 Данияр AI - Қазақша сатушы</h3>
+  <div class="chat-box" id="chatBox">
+    <div class="msg bot">Сәлем! Мен Даниярмын! Қошшы Жолының сатушысымын 🤖<br>Тойыңыз құтты болсын! Қандай той болады?<small>Данияр • қазір</small></div>
+  </div>
+  <div class="quick">
+    <button onclick="quickChat('Бағасы қанша?')">Бағасы қанша?</button>
+    <button onclick="quickChat('Той')">Той</button>
+    <button onclick="quickChat('Тегін көруге бола ма?')">Тегін көру</button>
+    <button onclick="quickChat('Қалай төлеймін?')">Қалай төлеймін?</button>
+  </div>
+  <div class="chat-input">
+    <input id="chatInput" placeholder="Хабарлама жаз..." onkeydown="if(event.key==='Enter')sendChat()">
+    <button onclick="sendChat()">Жіберу</button>
+  </div>
+  <p class="hint">Данияр қазақша жауап береді. "Бағасы қанша?" деп жазсаң - тарифтерді айтады. "Той" деп жазсаң - құттықтап, атыңды сұрайды.</p>
+</div>
+
+<!-- REPORT -->
+<div class="section" id="sec-report">
+  <div class="report">
+    <h3>📊 Меруерттің күндік есебі</h3>
+    <div class="report-row"><span>Бүгінгі дата</span><b id="r-date">-</b></div>
+    <div class="report-row"><span>Барлық клиент</span><b id="r-total">0</b></div>
+    <div class="report-row"><span>Қызығушылық бар</span><b id="r-interest">0</b></div>
+    <div class="report-row"><span>Төлеген клиент</span><b id="r-paid">0</b></div>
+    <div class="report-row"><span>Бас тартқан</span><b id="r-reject">0</b></div>
+    <div class="report-row"><span>Күндік табыс</span><b id="r-money" style="color:#FFD700">0₸</b></div>
+    <div class="report-row"><span>Конверсия</span><b id="r-conv">0%</b></div>
+  </div>
+  <button class="btn btn-yellow" onclick="copyReport()">📋 Есепті көшіру</button>
+  <button class="btn btn-green" onclick="shareWhatsApp()">💬 WhatsApp-қа жіберу</button>
+  <p class="hint">Есеп клиенттер базасынан автоматты түрде есептеледі. Бір клиент қоссаң - есеп бірден өзгереді.</p>
+</div>
+
+<!-- MODAL CARD -->
+<div class="modal" id="modal" onclick="if(event.target===this)closeCard()">
+  <div class="modal-card">
+    <button class="close" onclick="closeCard()">✕</button>
+    <div style="text-align:center">
+      <div class="avatar" id="m-avatar">👩‍💼</div>
+      <h2 id="m-name" style="margin:10px 0 4px">Айдана</h2>
+      <p id="m-role" style="margin:0;color:#666;font-size:13px">Клиент іздеуші</p>
+      <p style="margin:8px 0"><span class="dot"></span> <b>🟢 Желіде</b> • дәл қазір жұмыс істеп жатыр</p>
+    </div>
+    <div style="background:#F9FAFB;border-radius:12px;padding:12px;margin-top:12px">
+      <small style="color:#888;font-weight:700">ҚАЗІРГІ ТАПСЫРМАСЫ</small>
+      <p id="m-task" style="margin:6px 0 0;font-size:14px;line-height:1.5">Жаңа клиенттерді іздеп жатыр...</p>
+    </div>
+    <div id="m-tasks" style="margin-top:10px"></div>
+    <button class="btn btn-black" onclick="giveTaskFromCard()">＋ Осы қызметкерге тапсырма беру</button>
+  </div>
 </div>
 
 <script>
-function talk(t){let c=document.getElementById('chat');c.style.display='block';c.innerHTML=t;setTimeout(()=>c.style.display='none',4000)}
-let leads=17,pay=6,money=168000;
-setInterval(()=>{leads++;if(leads%3==0){pay++;money+=8000}document.getElementById('leads').innerText=leads;document.getElementById('pay').innerText=pay;document.getElementById('money').innerText=money.toLocaleString()+'₸'},5000);
+const firebaseConfig = {
+  apiKey: "AIzaSyBmuNU_hM7ZwdnpEGt200s_C8HYcwdZsW8",
+  authDomain: "qosshy-joly.firebaseapp.com",
+  databaseURL: "https://qosshy-joly-default-rtdb.firebaseio.com",
+  projectId: "qosshy-joly",
+  storageBucket: "qosshy-joly.firebasestorage.app",
+  messagingSenderId: "43683240461",
+  appId: "1:43683240461:web:a439eab5d26e81b71a5344"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const leadsRef = db.ref('leads');
+const tasksRef = db.ref('tasks');
 
-// 3D SCENE
-let scene=new THREE.Scene(); scene.background=new THREE.Color(0x0a1a2f);
-let camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1000); camera.position.set(0,4,8);
-let renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setSize(innerWidth,innerHeight); document.body.appendChild(renderer.domElement);
-let light=new THREE.AmbientLight(0xffffff,0.9); scene.add(light);
-let dir=new THREE.DirectionalLight(0xffd700,0.8); dir.position.set(5,10,5); scene.add(dir);
-// Floor
-let floor=new THREE.Mesh(new THREE.PlaneGeometry(20,20), new THREE.MeshStandardMaterial({color:0x1a3a5a})); floor.rotation.x=-Math.PI/2; scene.add(floor);
-// 3 Desks + Agents as 3D figures
-function person(x,z,color,name){
-  let g=new THREE.Group();
-  let body=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.5,1.6,16), new THREE.MeshStandardMaterial({color:color}));
-  body.position.y=0.8; g.add(body);
-  let head=new THREE.Mesh(new THREE.SphereGeometry(0.4,16,16), new THREE.MeshStandardMaterial({color:0xffdbac}));
-  head.position.y=2; g.add(head);
-  let desk=new THREE.Mesh(new THREE.BoxGeometry(1.4,0.8,0.7), new THREE.MeshStandardMaterial({color:0xffffff}));
-  desk.position.set(0,0.4,1); g.add(desk);
-  g.position.set(x,0,z); scene.add(g); return g;
+let leads = {};
+let tasks = {};
+let currentPerson = 'aidana';
+
+const STAFF = {
+  aidana: {name:'Айдана', role:'Клиент іздеуші', avatar:'👩‍💼', color:'#FFE4C4', task:'Жаңа клиенттерді іздеп жатыр. Instagram-да той жариялаған адамдарға жазып жатыр...'},
+  daniyar: {name:'Данияр', role:'Қазақша сатушы AI', avatar:'🤖', color:'#DBEAFE', task:'Клиенттерге баға айтып жатыр. "Қола 3000₸, Күміс 5000₸, Алтын 10000₸" деп жауап беріп жатыр...'},
+  meruert: {name:'Меруерт', role:'Бас менеджер', avatar:'👩‍💼', color:'#FCE7F3', task:'Төлемдерді тексеріп, күндік есепті дайындап жатыр...'}
+};
+
+function showTab(id, btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top: document.querySelector('.tabs').offsetTop - 70, behavior:'smooth'});
 }
-let p1=person(-3,0,0x25D366), p2=person(0,0,0xFFD700), p3=person(3,0,0xff6b9d);
-// Animate
-let angle=0;
-function animate(){requestAnimationFrame(animate); angle+=0.005; camera.position.x=Math.sin(angle)*7; camera.position.z=Math.cos(angle)*7; camera.lookAt(0,1,0); p1.rotation.y+=0.01; p2.rotation.y+=0.01; p3.rotation.y+=0.01; renderer.render(scene,camera);} animate();
-window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)})
+
+function tariffPrice(tariff){
+  if(tariff.includes('3000')) return 3000;
+  if(tariff.includes('5000')) return 5000;
+  if(tariff.includes('10000')) return 10000;
+  return 0;
+}
+function badgeFor(status){
+  if(status==='Жаңа клиент') return 'b-new';
+  if(status==='Қызығушылық бар') return 'b-interest';
+  if(status==='Ұсыныс жіберілді') return 'b-sent';
+  if(status==='Төленді') return 'b-paid';
+  return 'b-reject';
+}
+
+function addLead(){
+  const name = document.getElementById('f-name').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const type = document.getElementById('f-type').value;
+  const tariff = document.getElementById('f-tariff').value;
+  const status = document.getElementById('f-status').value;
+  if(!name){ alert('Атын жазшы!'); return; }
+  if(!phone){ alert('Телефонын жазшы!'); return; }
+  leadsRef.push({name, phone, type, tariff, status, createdAt: Date.now(), date: new Date().toISOString().slice(0,10)});
+  document.getElementById('f-name').value='';
+  document.getElementById('f-phone').value='';
+  alert('✅ ' + name + ' қосылды!');
+}
+
+function renderLeads(){
+  const list = document.getElementById('leadsList');
+  const arr = Object.entries(leads).reverse();
+  document.getElementById('leadsCount').innerText = arr.length;
+  if(arr.length===0){ list.innerHTML='<div class="empty">Әзірге клиент жоқ.</div>'; return; }
+  list.innerHTML = arr.map(([id,l])=>`
+    <div class="lead">
+      <div class="lead-top"><div><b>${l.name||''}</b><small>${l.phone||''} • ${l.type||''}</small></div><span class="badge ${badgeFor(l.status)}">${l.status||''}</span></div>
+      <div class="lead-meta"><span>🎁 ${l.tariff||''}</span><span>📅 ${l.date||''}</span></div>
+      <div class="lead-actions">
+        <button style="background:#D1FAE5" onclick="setStatus('${id}','Төленді')">✅ Төленді</button>
+        <button style="background:#FEF3C7" onclick="setStatus('${id}','Қызығушылық бар')">💛 Қызығушылық</button>
+        <button style="background:#FEE2E2" onclick="deleteLead('${id}')">🗑 Өшіру</button>
+      </div>
+    </div>
+  `).join('');
+  updateKPI();
+}
+function setStatus(id,status){ leadsRef.child(id).update({status}); }
+function deleteLead(id){ if(confirm('Өшіру керек пе?')) leadsRef.child(id).remove(); }
+
+function updateKPI(){
+  const arr = Object.values(leads);
+  const total = arr.length;
+  const interest = arr.filter(l=>l.status==='Қызығушылық бар' || l.status==='Ұсыныс жіберілді').length;
+  const paid = arr.filter(l=>l.status==='Төленді').length;
+  const money = arr.filter(l=>l.status==='Төленді').reduce((s,l)=>s+tariffPrice(l.tariff||''),0);
+  const reject = arr.filter(l=>l.status==='Бас тартты').length;
+  const conv = total>0 ? Math.round(paid/total*100) : 0;
+  document.getElementById('kpiTotal').innerText = total;
+  document.getElementById('kpiInterest').innerText = interest;
+  document.getElementById('kpiPaid').innerText = paid;
+  document.getElementById('kpiMoney').innerText = money.toLocaleString('ru-RU') + '₸';
+  document.getElementById('kpiMoneySub').innerText = 'Бүгін • ' + paid + ' төлем';
+  document.getElementById('r-date').innerText = new Date().toLocaleDateString('kk-KZ',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('r-total').innerText = total;
+  document.getElementById('r-interest').innerText = interest;
+  document.getElementById('r-paid').innerText = paid;
+  document.getElementById('r-reject').innerText = reject;
+  document.getElementById('r-money').innerText = money.toLocaleString('ru-RU') + '₸';
+  document.getElementById('r-conv').innerText = conv + '%';
+}
+
+function addTask(){
+  const who = document.getElementById('t-who').value;
+  const text = document.getElementById('t-text').value.trim();
+  if(!text){ alert('Тапсырманы жазшы!'); return; }
+  tasksRef.push({who, text, done:false, createdAt: Date.now()});
+  document.getElementById('t-text').value='';
+  alert('✅ Тапсырма ' + STAFF[who].name + ' берілді!');
+}
+function renderTasks(){
+  const list = document.getElementById('tasksList');
+  const arr = Object.entries(tasks).reverse();
+  if(arr.length===0){ list.innerHTML='<div class="empty">Тапсырма жоқ.</div>'; return; }
+  list.innerHTML = arr.map(([id,t])=>`
+    <div class="task"><b>${STAFF[t.who]?.name||t.who} • ${STAFF[t.who]?.role||''}</b><div>${t.text}</div><small>${t.done ? '✅ Орындалды' : '🟢 Орындалып жатыр'} • <a href="#" onclick="toggleTask('${id}',${!t.done});return false">${t.done ? 'Қайта ашу' : 'Орындалды деп белгілеу'}</a> • <a href="#" onclick="deleteTask('${id}');return false">Өшіру</a></small></div>
+  `).join('');
+}
+function toggleTask(id,done){ tasksRef.child(id).update({done}); }
+function deleteTask(id){ tasksRef.child(id).remove(); }
+
+function openCard(who){
+  currentPerson = who;
+  const s = STAFF[who];
+  document.getElementById('m-avatar').innerText = s.avatar;
+  document.getElementById('m-avatar').style.background = s.color;
+  document.getElementById('m-name').innerText = s.name;
+  document.getElementById('m-role').innerText = s.role;
+  document.getElementById('m-task').innerText = s.task;
+  const myTasks = Object.entries(tasks).filter(([id,t])=>t.who===who && !t.done).reverse().slice(0,3);
+  document.getElementById('m-tasks').innerHTML = myTasks.length ? '<small style="color:#888;font-weight:700">БЕРІЛГЕН ТАПСЫРМАЛАР</small>' + myTasks.map(([id,t])=>`<div class="task">${t.text}</div>`).join('') : '';
+  document.getElementById('modal').classList.add('open');
+}
+function closeCard(){ document.getElementById('modal').classList.remove('open'); }
+function giveTaskFromCard(){
+  closeCard();
+  document.getElementById('t-who').value = currentPerson;
+  showTab('tasks', document.querySelectorAll('.tab')[1]);
+  document.getElementById('t-text').focus();
+}
+
+// Walking animation - every 2-3 sec move to random position
+const spots = [
+  {left:'18%', top:'95px'}, {left:'58%', top:'95px'}, {left:'38%', top:'230px'},
+  {left:'10%', top:'200px'}, {left:'68%', top:'210px'}, {left:'38%', top:'130px'},
+  {left:'28%', top:'280px'}, {left:'62%', top:'300px'}, {left:'45%', top:'65px'}
+];
+function movePeople(){
+  ['p-aidana','p-daniyar','p-meruert'].forEach(id=>{
+    const el = document.getElementById(id);
+    const s = spots[Math.floor(Math.random()*spots.length)];
+    el.style.left = s.left;
+    el.style.top = s.top;
+  });
+}
+setInterval(movePeople, 2600);
+movePeople();
+
+// Daniyar AI Chat
+function daniyarReply(text){
+  const t = text.toLowerCase();
+  if(t.includes('баға') || t.includes('қанша') || t.includes('цена') || t.includes('сколько')){
+    return 'Бағасы мынау:<br><br>🥉 Қола - 3000₸<br>🥈 Күміс - 5000₸<br>🥇 Алтын - 10000₸<br><br>Алдымен ТЕГІН көріңіз! Ұнаса - төлейсіз. Қайсысы керек?';
+  }
+  if(t.includes('той') || t.includes('үйлену') || t.includes('ұзату') || t.includes('сүндет') || t.includes('бесік')){
+    return 'Тойыңыз құтты болсын! 🎉🎉🎉<br><br>Қандай керемет жаңалық! Атыңыз кім? Той қашан болады? Мен сізге ең әдемі шақыртуды жасап беремін!';
+  }
+  if(t.includes('тегін') || t.includes('бесплатно') || t.includes('көру')){
+    return 'Иә, ТЕГІН көруге болады! 😍<br><br>Алдымен сізге үлгі жіберемін, ұнаса ғана төлейсіз. Атыңызды жазыңызшы, үлгіні жіберейін!';
+  }
+  if(t.includes('төле') || t.includes('каспи') || t.includes('kaspi') || t.includes('оплата') || t.includes('қалай')){
+    return 'Төлем өте оңай!<br><br>Kaspi: +77082418836<br><br>Төлеген соң чекті жіберіңіз, кодты бірден береміз ✅';
+  }
+  if(t.includes('сәлем') || t.includes('салем') || t.includes('привет') || t.includes('hello')){
+    return 'Сәлем! Қош келдіңіз! 👋<br><br>Мен Даниярмын! Тойыңызға шақырту керек пе? Қандай той болады?';
+  }
+  if(t.includes('рахмет') || t.includes('спасибо')){
+    return 'Оқасы жоқ! 😊 Бізге сенгеніңізге рахмет! Тойыңыз керемет өтсін!';
+  }
+  return 'Түсіндім! 😊<br><br>Сізге көмектесейін:<br>• Бағасы - "Бағасы қанша?" деп жазыңыз<br>• Той туралы - "Той" деп жазыңыз<br>• Төлем - "Қалай төлеймін?" деп жазыңыз<br><br>Атыңыз кім?';
+}
+function quickChat(text){
+  document.getElementById('chatInput').value = text;
+  sendChat();
+}
+function sendChat(){
+  const inp = document.getElementById('chatInput');
+  const text = inp.value.trim();
+  if(!text) return;
+  const box = document.getElementById('chatBox');
+  box.innerHTML += `<div class="msg me">${text}<small>Сіз • қазір</small></div>`;
+  inp.value='';
+  box.scrollTop = box.scrollHeight;
+  setTimeout(()=>{
+    box.innerHTML += `<div class="msg bot">${daniyarReply(text)}<small>Данияр • қазір</small></div>`;
+    box.scrollTop = box.scrollHeight;
+  }, 800);
+}
+
+function getReportText(){
+  const arr = Object.values(leads);
+  const total = arr.length;
+  const paid = arr.filter(l=>l.status==='Төленді').length;
+  const money = arr.filter(l=>l.status==='Төленді').reduce((s,l)=>s+tariffPrice(l.tariff||''),0);
+  const date = new Date().toLocaleDateString('kk-KZ');
+  return `📊 QOSSHY JOLY - Күндік есеп (${date})\n\n👥 Барлық клиент: ${total}\n✅ Төлеген: ${paid}\n💰 Табыс: ${money.toLocaleString('ru-RU')}₸\n\nМеруерт - Бас менеджер`;
+}
+function copyReport(){
+  const txt = getReportText();
+  if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(()=>alert('✅ Есеп көшірілді!')); }
+  else { prompt('Көшіріп ал:', txt); }
+}
+function shareWhatsApp(){
+  window.open('https://wa.me/?text=' + encodeURIComponent(getReportText()), '_blank');
+}
+
+// Firebase listeners
+leadsRef.on('value', snap => { leads = snap.val() || {}; renderLeads(); });
+tasksRef.on('value', snap => { tasks = snap.val() || {}; renderTasks(); });
 </script>
 </body>
 </html>
