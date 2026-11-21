@@ -2,409 +2,127 @@
 <html lang="kk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>小芳 VIDEO STUDIES - TikTok Style</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Virtual Office - 24/7 Компания</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:linear-gradient(180deg,#1A0033,#0D001A);color:#fff;font-family:Arial,sans-serif}
-header{height:65px;background:rgba(255,255,255,.08);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:space-between;padding:0 20px}
-.logo{font-size:19px;font-weight:900;background:linear-gradient(90deg,#FF0050,#00F2EA);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-button,.upload{border:0;border-radius:999px;padding:11px 16px;background:#FF0050;color:white;cursor:pointer;font-weight:800}
-button:hover,.upload:hover{background:#FF2D6D}
-.btn-cyan{background:#00F2EA;color:#000}
-.btn-yellow{background:#FFE500;color:#000}
-input,select{background:#222;color:white;border:1px solid #444;padding:9px;border-radius:10px;max-width:100%}
-main{padding:15px;max-width:1450px;margin:auto}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}
-.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:15px}
-.panel{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:14px;margin-bottom:15px}
-h3{font-size:14px;color:#00F2EA;margin:0 0 12px}
-.preview{background:#000;border-radius:16px;min-height:260px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border:2px solid #333}
-canvas{width:100%;max-height:480px;object-fit:contain}
-#empty{color:#888;text-align:center}
-.controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
-.field{display:flex;flex-direction:column;gap:7px;margin-bottom:13px;font-size:12px;color:#ddd}
-.field input,.field select{width:100%}
-.timeline{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);padding:14px;border-radius:16px;margin-top:15px}
-.track{height:43px;background:#222;border-radius:8px;margin-top:9px;position:relative;overflow:hidden}
-.clip{height:100%;background:linear-gradient(90deg,#FF0050,#00F2EA);display:flex;align-items:center;padding:8px;font-size:12px;white-space:nowrap;overflow:hidden;color:#000;font-weight:800}
-.track-label{font-size:11px;color:#aaa;margin-top:12px}
-.status{font-size:12px;color:#00F2EA;margin-top:10px}
-.pill{display:inline-block;background:#333;padding:6px 12px;border-radius:999px;font-size:12px;margin:3px;cursor:pointer}
-.pill.active{background:#FF0050}
-@media(max-width:750px){.layout{grid-template-columns:1fr}header{padding:0 10px}.logo{font-size:15px}.preview{min-height:190px}main{padding:9px}}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#0f3d1e;color:#fff;overflow-x:hidden}
+.header{background:#1a5c2e;padding:15px;text-align:center;position:sticky;top:0;z-index:10}
+.header h1{font-size:22px}
+.header p{font-size:13px;opacity:.9}
+.stats{display:flex;gap:10px;justify-content:center;padding:15px;flex-wrap:wrap}
+.stat{background:#fff;color:#111;border-radius:15px;padding:12px 18px;text-align:center;min-width:110px;box-shadow:0 5px 15px rgba(0,0,0,.3)}
+.stat b{font-size:22px;display:block;color:#1a5c2e}
+.stat span{font-size:12px;color:#666}
+.office{max-width:900px;margin:0 auto;padding:10px 15px 30px}
+.floor{background:linear-gradient(135deg,#2e9e4f,#1e7a3a);border-radius:25px;padding:20px;position:relative;box-shadow:0 20px 40px rgba(0,0,0,.4);transform:perspective(900px) rotateX(8deg)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.room{background:rgba(255,255,255,.95);color:#111;border-radius:18px;padding:15px;position:relative;min-height:180px;cursor:pointer;transition:.2s}
+.room:hover{transform:scale(1.02)}
+.room.active{outline:3px solid #ffcc00}
+.room h3{font-size:16px;margin-bottom:5px}
+.room .tag{font-size:11px;background:#e8f5e9;color:#1a5c2e;padding:3px 8px;border-radius:20px;display:inline-block}
+.avatar{font-size:48px;margin:10px 0}
+.status{font-size:12px;margin-top:8px}
+.dot{display:inline-block;width:9px;height:9px;background:#22c55e;border-radius:50%;margin-right:5px;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.3}}
+.chatbox{background:#fff;color:#111;border-radius:18px;margin-top:15px;padding:15px;min-height:120px}
+.chatbox h4{margin-bottom:10px}
+.msg{background:#f1f8f2;padding:10px 12px;border-radius:12px;margin-bottom:8px;font-size:14px;line-height:1.4}
+.msg b{color:#1a5c2e}
+.btn{display:block;text-align:center;background:#25D366;color:#fff;text-decoration:none;padding:15px;border-radius:15px;font-weight:bold;margin-top:15px;font-size:16px}
+.btn2{background:#ffcc00;color:#111}
+.footer{text-align:center;font-size:12px;opacity:.7;padding:15px}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">小芳 VIDEO STUDIES</div>
-  <button onclick="exportVideo()">⬇ Экспорт</button>
-</header>
+<div class="header">
+  <h1>🏢 24/7 ЖҰМЫС ІСТЕЙТІН КОМПАНИЯ</h1>
+  <p>Мейрамдікі сияқты 3D Virtual Office • Сен ұйықтасаң да жұмыс істейді</p>
+</div>
 
-<main>
-  <div class="toolbar">
-    <label class="upload">＋ Видео<input hidden type="file" id="videoFile" accept="video/*"></label>
-    <label class="upload">＋ Фото<input hidden type="file" id="imageFile" accept="image/*"></label>
-    <label class="upload">♫ Музыка<input hidden type="file" id="audioFile" accept="audio/*"></label>
-    <button onclick="newProject()" class="btn-yellow">Жаңа жоба</button>
+<div class="stats">
+  <div class="stat"><b id="leads">17</b><span>Лиды сегодня</span></div>
+  <div class="stat"><b id="pay">6</b><span>Оплаты</span></div>
+  <div class="stat"><b id="money">168 000₸</b><span>Выручка / Табыс</span></div>
+</div>
+
+<div class="office">
+  <div class="floor">
+    <div class="grid">
+      <div class="room" onclick="talk('daniyar')">
+        <span class="tag">САТУ / Продажи</span>
+        <h3>Данияр - Сатушы</h3>
+        <div class="avatar">🧑‍💼</div>
+        <div class="status"><span class="dot"></span>Желіде • Клиентпен сөйлесіп жатыр</div>
+        <div style="font-size:12px;margin-top:8px">Баға айтады, код сатады</div>
+      </div>
+
+      <div class="room" onclick="talk('meruert')">
+        <span class="tag">ЕСЕП / Бухгалтерия</span>
+        <h3>Меруерт - Есепші</h3>
+        <div class="avatar">👩‍💼</div>
+        <div class="status"><span class="dot"></span>Желіде • Төлем тексеріп жатыр</div>
+        <div style="font-size:12px;margin-top:8px">Төлемді есептейді, чек береді</div>
+      </div>
+
+      <div class="room" onclick="talk('aidana')">
+        <span class="tag">ҚАРСЫ АЛУ / Ресепшн</span>
+        <h3>Айдана - Қарсы алушы</h3>
+        <div class="avatar">👩‍🦰</div>
+        <div class="status"><span class="dot"></span>Желіде • Жаңа клиент күтіп тұр</div>
+        <div style="font-size:12px;margin-top:8px">Сәлемдеседі, сұрақ қояды</div>
+      </div>
+
+      <div class="room active" onclick="talk('boss')">
+        <span class="tag">ДИРЕКТОР / Басшы</span>
+        <h3>Сен - Директор 👑</h3>
+        <div class="avatar">😎</div>
+        <div class="status"><span class="dot"></span>Бақылауда • Демалыста</div>
+        <div style="font-size:12px;margin-top:8px">Сен тек табысты көресің, қалғанын агенттер істейді</div>
+      </div>
+    </div>
+
+    <div class="chatbox">
+      <h4>💬 Агенттер сөйлесіп жатыр:</h4>
+      <div id="chat">
+        <div class="msg"><b>Айдана:</b> Сәлеметсіз бе! 😊 Шақырту керек пе? ТЕГІН көріп көріңіз!</div>
+        <div class="msg"><b>Данияр:</b> Бағасы: Қола 3000₸, Күміс 5000₸, Алтын 8000₸. Қайсысы керек?</div>
+        <div class="msg"><b>Меруерт:</b> Төлем түсті ✅ 5000₸. Код дайын!</div>
+      </div>
+    </div>
+
+    <a class="btn" href="https://kasipkz.github.io/shaqyrtu-5minut/" target="_blank">👉 ТЕГІН КӨРУ - Тест жасау</a>
+    <a class="btn btn2" href="https://wa.me/77056623133?text=%D0%A1%D3%99%D0%BB%D0%B5%D0%BC%D0%B5%D1%82%D1%81%D1%96%D0%B7%20%D0%B1%D0%B5!%20%D0%9A%D0%BE%D0%B4%20%D0%BA%D0%B5%D1%80%D0%B5%D0%BA" target="_blank">💬 WhatsApp-қа жазу - Код алу</a>
+
   </div>
+</div>
 
-  <div class="layout">
-    <section>
-      <div class="panel">
-        <h3>▶ VIDEO PREVIEW - TikTok Style</h3>
-        <div class="preview">
-          <canvas id="canvas" width="1280" height="720"></canvas>
-          <div id="empty">小芳 VIDEO STUDIES<br>Видео жүктеңіз</div>
-        </div>
-        <div class="controls">
-          <button onclick="playVideo()">▶ Play</button>
-          <button onclick="pauseVideo()" class="btn-cyan">Ⅱ Pause</button>
-          <button onclick="restartVideo()" class="btn-yellow">↺ Басы</button>
-        </div>
-        <div class="status" id="status">Жоба дайын</div>
-      </div>
-
-      <div class="timeline">
-        <h3>✂ TIMELINE — МОНТАЖ</h3>
-        <div class="track-label">VIDEO TRACK</div>
-        <div class="track"><div class="clip" id="videoClip" style="width:0%">Видео</div></div>
-        <div class="track-label">AUDIO TRACK</div>
-        <div class="track"><div class="clip" id="audioClip" style="width:0%;background:#00F2EA">Музыка</div></div>
-        <div class="track-label">TEXT / SUBTITLE TRACK</div>
-        <div class="track"><div class="clip" id="textClip" style="width:0%;background:#FFE500">Субтитр</div></div>
-        <div class="field" style="margin-top:15px">
-          <label>Видеоның уақытын таңдау</label>
-          <input type="range" id="seek" min="0" max="100" value="0">
-        </div>
-      </div>
-    </section>
-
-    <aside>
-      <div class="panel">
-        <h3>⚙ ВИДЕО БАПТАУ</h3>
-        <div class="field">
-          <label>Басталу уақыты (секунд)</label>
-          <input type="number" id="start" value="0" min="0" step="0.1">
-        </div>
-        <div class="field">
-          <label>Аяқталу уақыты (секунд)</label>
-          <input type="number" id="end" value="0" min="0" step="0.1">
-        </div>
-        <button style="width:100%" onclick="cutVideo()">✂ Кесу шекарасын қолдану</button>
-        <div class="field" style="margin-top:15px">
-          <label>Видео жылдамдығы</label>
-          <select id="speed" onchange="changeSpeed()">
-            <option value="0.25">0.25x</option>
-            <option value="0.5">0.5x</option>
-            <option value="1" selected>1x</option>
-            <option value="1.5">1.5x</option>
-            <option value="2">2x</option>
-            <option value="4">4x</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Дыбыс деңгейі</label>
-          <input type="range" id="volume" min="0" max="1" step="0.05" value="1" oninput="changeVolume()">
-        </div>
-      </div>
-
-      <!-- ЖАҢА: АВТО СУБТИТР -->
-      <div class="panel" style="border:2px solid #FF0050">
-        <h3>🎤 АВТО СУБТИТР - Қазақша</h3>
-        <button style="width:100%" onclick="startAutoSub()">🎤 Авто-субтитрді қосу</button>
-        <button style="width:100%;margin-top:8px;background:#333" onclick="stopAutoSub()">⏹ Тоқтату</button>
-        <div style="margin-top:10px">
-          <span class="pill active" onclick="setSubStyle('tiktok',this)">TikTok</span>
-          <span class="pill" onclick="setSubStyle('neon',this)">Неон</span>
-          <span class="pill" onclick="setSubStyle('minimal',this)">Минимал</span>
-        </div>
-        <div style="font-size:11px;color:#bbb;margin-top:8px">Сөйлесең — қазақша мәтін видеоның үстіне TikTok стилінде шығады. Экспортта да қалады!</div>
-      </div>
-
-      <div class="panel">
-        <h3>✍ МӘТІН ҚОСУ</h3>
-        <div class="field">
-          <label>Мәтін / Субтитр мәтіні</label>
-          <input id="textInput" placeholder="Мәтінді енгізіңіз" value="Сәлем! Біз сізді күтеміз!">
-        </div>
-        <div class="field">
-          <label>Мәтін түсі</label>
-          <input type="color" id="textColor" value="#FFE500">
-        </div>
-        <div class="field">
-          <label>Қаріп өлшемі</label>
-          <input type="number" id="fontSize" value="55" min="10" max="150">
-        </div>
-        <button style="width:100%" onclick="draw()">Мәтінді қолдану</button>
-        <button style="width:100%;margin-top:8px" class="btn-yellow" onclick="useInvite()">📢 Шақырту мәтінін қой</button>
-      </div>
-
-      <div class="panel">
-        <h3>🎬 ФОРМАТ</h3>
-        <div class="field">
-          <label>Видео өлшемі</label>
-          <select id="format" onchange="setFormat()">
-            <option value="16:9">YouTube 16:9</option>
-            <option value="9:16">TikTok 9:16</option>
-            <option value="1:1">Instagram 1:1</option>
-          </select>
-        </div>
-        <button style="width:100%" onclick="exportVideo()">⬇ Видеоны сақтау</button>
-      </div>
-    </aside>
-  </div>
-</main>
-
-<video id="video" playsinline style="display:none"></video>
-<audio id="music" loop></audio>
+<div class="footer">© 2026 Virtual Office • +77056623133 • Сенің компанияң</div>
 
 <script>
-const video=document.getElementById('video');
-const music=document.getElementById('music');
-const canvas=document.getElementById('canvas');
-const ctx=canvas.getContext('2d');
-const status=document.getElementById('status');
-let videoURL=null,audioURL=null,image=null;
-let trimStart=0,trimEnd=0,animation=null,exporting=false;
-let autoRec=null, subStyle='tiktok', autoSubText='';
+let leads = 17, pay = 6, money = 168000;
+function update(){
+  leads++; if(leads>30) leads=17;
+  pay++; if(pay>15) pay=6;
+  money += 5000;
+  document.getElementById('leads').innerText = leads;
+  document.getElementById('pay').innerText = pay;
+  document.getElementById('money').innerText = money.toLocaleString('ru-RU') + '₸';
+}
+setInterval(update, 5000);
 
-function message(t){status.textContent=t}
-
-// === ЖАҢА: АВТО СУБТИТР ===
-function startAutoSub(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){ message('Chrome браузерде аш!'); alert('Chrome-да аш! Safari-де авто-субтитр істемейді'); return; }
-  if(autoRec) autoRec.stop();
-  autoRec=new SR(); autoRec.lang='kk-KZ'; autoRec.continuous=true; autoRec.interimResults=true;
-  autoRec.onresult=e=>{
-    let t='';
-    for(let i=0;i<e.results.length;i++) t+=e.results[i][0].transcript;
-    autoSubText=t;
-    document.getElementById('textInput').value=t;
-    document.getElementById('textClip').style.width='100%';
-  };
-  autoRec.onend=()=>{ if(autoRec) autoRec.start(); };
-  autoRec.start();
-  message('🎤 Тыңдап жатырмын... Сөйле!');
-  alert('Сөйле! Қазақша субтитр шығады');
-}
-function stopAutoSub(){
-  if(autoRec){ autoRec.onend=null; autoRec.stop(); autoRec=null; message('Субтитр тоқтатылды'); }
-}
-function setSubStyle(s,el){
-  subStyle=s;
-  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
-  el.classList.add('active');
-  message('Субтитр стилі: '+s);
-}
-function useInvite(){
-  const txt='Жаңа коллекция келді! 🛍️ Бағасы тиімді! Бүгін кел!';
-  document.getElementById('textInput').value=txt; autoSubText='';
-  draw(); message('Шақырту қойылды!');
-}
-
-document.getElementById('videoFile').onchange=e=>{
- const f=e.target.files[0];if(!f)return;
- if(videoURL)URL.revokeObjectURL(videoURL);
- videoURL=URL.createObjectURL(f);
- video.src=videoURL;
- video.onloadedmetadata=()=>{
-  trimStart=0;trimEnd=video.duration;
-  document.getElementById('start').value=0;
-  document.getElementById('end').value=video.duration.toFixed(2);
-  document.getElementById('videoClip').style.width='100%';
-  document.getElementById('empty').style.display='none';
-  draw();message('Видео жүктелді');
- };
+const chats = {
+  daniyar: "<div class='msg'><b>Данияр:</b> Сәлем! Қай шақырту керек? Қола, Күміс, Алтын? Айтыңыз, бірден жасаймын!</div>",
+  meruert: "<div class='msg'><b>Меруерт:</b> Сәлеметсіз бе! Төлеміңізді тексердім, бәрі дұрыс ✅ Кодты беремін.</div>",
+  aidana: "<div class='msg'><b>Айдана:</b> Сәлеметсіз бе! 😊 Қай күнге? Қанша адамға? Атыңыз кім?</div>",
+  boss: "<div class='msg'><b>Сен (Директор):</b> Жарайсыңдар! Мен демалыстамын, сендер жұмыс істей беріңдер! 🍋🍋🍋</div>"
 };
-
-document.getElementById('audioFile').onchange=e=>{
- const f=e.target.files[0];if(!f)return;
- if(audioURL)URL.revokeObjectURL(audioURL);
- audioURL=URL.createObjectURL(f);
- music.src=audioURL;
- document.getElementById('audioClip').style.width='100%';
- message('Музыка қосылды');
-};
-
-document.getElementById('imageFile').onchange=e=>{
- const f=e.target.files[0];if(!f)return;
- const url=URL.createObjectURL(f);
- image=new Image();
- image.onload=()=>{draw();message('Фото қосылды');};
- image.src=url;
-};
-
-function drawSubtitle(txt){
-  if(!txt) return;
-  const size=Number(document.getElementById('fontSize').value)||55;
-  ctx.textAlign='center'; ctx.textBaseline='middle';
-  // Мәтінді 2 қатарға бөлу - ұзын болса
-  let words=txt.split(' '); let lines=[]; let cur='';
-  words.forEach(w=>{ if((cur+' '+w).length>22){ lines.push(cur); cur=w; } else cur=cur?cur+' '+w:w; });
-  if(cur) lines.push(cur);
-  lines.forEach((line,i)=>{
-    let y=canvas.height*.83 + (i-(lines.length-1)/2)* (size+8);
-    if(subStyle==='tiktok'){
-      // TikTok: әр сөз түрлі түс - қара фон + түсті әріп
-      let ws=line.split(' ');
-      let totalW=0; let widths=ws.map(w=>{ ctx.font='900 '+size+'px Arial'; return ctx.measureText(w+' ').width; });
-      totalW=widths.reduce((a,b)=>a+b,0);
-      let x=canvas.width/2 - totalW/2;
-      let colors=['#FFE500','#00F2EA','#FF0050'];
-      ws.forEach((w,idx)=>{
-        ctx.font='900 '+size+'px Arial';
-        ctx.fillStyle='rgba(0,0,0,.7)';
-        ctx.fillRect(x-4,y-size/2-4, widths[idx], size+8);
-        ctx.fillStyle=colors[idx%3];
-        ctx.fillText(w, x+ctx.measureText(w).width/2, y);
-        x+=widths[idx];
-      });
-    } else if(subStyle==='neon'){
-      ctx.font='900 '+size+'px Arial';
-      ctx.shadowColor='#FF0050'; ctx.shadowBlur=25;
-      ctx.fillStyle='#fff'; ctx.fillText(line, canvas.width/2, y);
-      ctx.shadowBlur=0;
-    } else {
-      ctx.font='bold '+size+'px Arial';
-      ctx.fillStyle='rgba(0,0,0,.6)'; ctx.fillText(line, canvas.width/2+2, y+2);
-      ctx.fillStyle=document.getElementById('textColor').value; ctx.fillText(line, canvas.width/2, y);
-    }
-  });
+function talk(who){
+  document.getElementById('chat').innerHTML += chats[who];
 }
-
-function draw(){
- ctx.fillStyle='#08090d';
- ctx.fillRect(0,0,canvas.width,canvas.height);
- if(video.readyState>=2){
-  const vw=video.videoWidth,vh=video.videoHeight;
-  const scale=Math.min(canvas.width/vw,canvas.height/vh);
-  const w=vw*scale,h=vh*scale;
-  ctx.drawImage(video,(canvas.width-w)/2,(canvas.height-h)/2,w,h);
- }
- if(image){
-  const scale=Math.min(canvas.width/image.width,canvas.height/image.height);
-  const w=image.width*scale,h=image.height*scale;
-  ctx.drawImage(image,(canvas.width-w)/2,(canvas.height-h)/2,w,h);
- }
- // Авто-субтитр басым - егер сөйлеп жатсаң, сол шығады
- let txt = autoSubText || document.getElementById('textInput').value;
- if(txt) drawSubtitle(txt);
- if(!exporting)animation=requestAnimationFrame(draw);
-}
-
-function playVideo(){
- if(!video.src){message('Алдымен видео жүктеңіз');return}
- if(video.currentTime<trimStart||video.currentTime>=trimEnd)video.currentTime=trimStart;
- video.play();music.play().catch(()=>{});
-}
-function pauseVideo(){video.pause();music.pause()}
-function restartVideo(){video.currentTime=trimStart;draw()}
-function changeSpeed(){video.playbackRate=Number(document.getElementById('speed').value)}
-function changeVolume(){video.volume=Number(document.getElementById('volume').value)}
-function cutVideo(){
- const s=Number(document.getElementById('start').value);
- const e=Number(document.getElementById('end').value);
- if(!video.duration||s<0||e>video.duration||s>=e){
-  message('Уақытты дұрыс енгізіңіз');return;
- }
- trimStart=s;trimEnd=e;
- video.currentTime=s;
- message('Кесу шекаралары қолданылды');
-}
-document.getElementById('seek').oninput=e=>{
- if(video.duration)video.currentTime=Number(e.target.value)/100*video.duration;
-};
-video.ontimeupdate=()=>{
- if(video.duration){
-  document.getElementById('seek').value=video.currentTime/video.duration*100;
-  if(video.currentTime>=trimEnd){video.pause();video.currentTime=trimStart}
- }
-};
-function setFormat(){
- const f=document.getElementById('format').value;
- if(f==='9:16'){canvas.width=720;canvas.height=1280}
- else if(f==='1:1'){canvas.width=900;canvas.height=900}
- else{canvas.width=1280;canvas.height=720}
- draw();
-}
-function newProject(){
- pauseVideo();
- stopAutoSub();
- video.removeAttribute('src');video.load();
- music.removeAttribute('src');music.load();
- image=null;videoURL=null;audioURL=null;autoSubText='';
- trimStart=0;trimEnd=0;
- document.getElementById('textInput').value='';
- document.getElementById('videoClip').style.width='0%';
- document.getElementById('audioClip').style.width='0%';
- document.getElementById('textClip').style.width='0%';
- document.getElementById('empty').style.display='block';
- draw();message('Жаңа жоба ашылды');
-}
-async function exportVideo(){
- if(!video.src){message('Алдымен видео жүктеңіз');return}
- if(!window.MediaRecorder||!canvas.captureStream){
-  message('Бұл браузер экспортты қолдамайды');return;
- }
- if(video.readyState<2){message('Видео дайындалуда');return}
- pauseVideo();
- exporting=true;
- cancelAnimationFrame(animation);
- const stream=canvas.captureStream(30);
- let sourceStream=null,audioStream=null;
- try{
-  if(video.captureStream){
-   sourceStream=video.captureStream();
-   sourceStream.getAudioTracks().forEach(t=>stream.addTrack(t));
-  }
-  if(music.src){
-   music.currentTime=0;
-   await music.play().catch(()=>{});
-   if(music.captureStream){
-    audioStream=music.captureStream();
-    audioStream.getAudioTracks().forEach(t=>stream.addTrack(t));
-   }
-  }
- }catch(err){console.log(err)}
- const mime=MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')?'video/webm;codecs=vp9,opus':'video/webm';
- const recorder=new MediaRecorder(stream,{mimeType:mime});
- const chunks=[];
- recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
- recorder.onstop=()=>{
-  const blob=new Blob(chunks,{type:'video/webm'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download='xiaofang-video.webm';a.click();
-  setTimeout(()=>URL.revokeObjectURL(url),30000);
-  stream.getTracks().forEach(t=>t.stop());
-  if(sourceStream)sourceStream.getTracks().forEach(t=>t.stop());
-  if(audioStream)audioStream.getTracks().forEach(t=>t.stop());
-  exporting=false;draw();
-  message('Видео сақталды!');
- };
- recorder.start();
- video.currentTime=trimStart;
- await new Promise(resolve=>{
-  if(video.currentTime===trimStart)resolve();
-  else video.onseeked=resolve;
- });
- video.playbackRate=Number(document.getElementById('speed').value);
- await video.play();
- message('Видео жазылып жатыр...');
- const check=()=>{
-  if(video.currentTime>=trimEnd||video.ended){
-   video.pause();music.pause();
-   recorder.stop();
-  }else if(exporting){
-   requestAnimationFrame(check);
-  }
- };
- check();
-}
-draw();
 </script>
 </body>
 </html>
